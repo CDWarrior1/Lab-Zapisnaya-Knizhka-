@@ -1,0 +1,115 @@
+using System;
+using System.IO;
+using System.Text;
+
+namespace ConsoleApp1
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string file_name = "SimpleNotebook.txt";
+            string state = null;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.BackgroundColor = ConsoleColor.Magenta;
+            Console.Clear();
+            Console.WriteLine("Запускаем простую записную книжку . .");
+            if (System.IO.File.Exists(Convert.ToString(Path.GetFullPath(file_name))) == false)
+                Console.WriteLine("Не найден файл SimpleNotebook.txt. . он будет создан автоматически . .");
+            Console.WriteLine("Готово . .");
+            while (state != "3")
+            {
+                try
+                {
+                    Console.WriteLine(" 1 - добавить новую запись  2 - найти запись  3 - выход");
+                    state = Console.ReadLine();
+                    switch (state)
+                    {
+                        case "1":
+                            Human temp = new Human();
+                            Console.WriteLine("Введите ФИО: ");
+                            temp.Name = Console.ReadLine();
+                            Console.WriteLine("Введите номер телефона: ");
+                            temp.Phone = Console.ReadLine();
+                            Console.WriteLine("Введите страну: ");
+                            temp.Country = Console.ReadLine();
+                            Console.WriteLine("Введите дату рождения: ");
+                            temp.BirthDate = Console.ReadLine();
+                            Console.WriteLine("Введите организацию: ");
+                            temp.Organisation = Console.ReadLine();
+                            Console.WriteLine("Введите почтовый индекс: ");
+                            temp.Post = Console.ReadLine();
+                            Console.WriteLine("Введите прочую информацию: ");
+                            temp.Other = Console.ReadLine();
+                            temp.WriteHuman();
+                            break;
+                        case "2":
+                            string n = null;
+                            Console.WriteLine("Введите ФИО человека,которого ищем: ");
+                            n = Console.ReadLine();
+                            Human.DisplayHuman(n);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+            Console.WriteLine("Работа завершена . . Нажмите клавишу для выхода . .");
+            Console.ReadLine();
+        }
+
+
+    }
+
+    public class Human
+    {
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Country { get; set; }
+        public string BirthDate { get; set; }
+        public string Organisation { get; set; }
+        public string Post { get; set; }
+        public string Other { get; set; }
+        public Human() { }
+        public void WriteHuman()
+        {
+            using (StreamWriter sw = File.AppendText("SimpleNotebook.txt"))
+            {
+                sw.WriteLine(this.Name);
+                sw.WriteLine(this.Phone);
+                sw.WriteLine(this.Country);
+                sw.WriteLine(this.BirthDate);
+                sw.WriteLine(this.Organisation);
+                sw.WriteLine(this.Post);
+                sw.WriteLine(this.Other);
+            }
+        }
+        public static void DisplayHuman(string name)
+        {
+            using (StreamReader sr = File.OpenText("SimpleNotebook.txt"))
+            {
+                string temp = null;
+                while ((temp = sr.ReadLine()) != name && temp != null) ;
+                if (temp == name)
+                {
+                    Console.WriteLine("ФИО: " + temp);
+                    Console.WriteLine(String.Format("Номер телефона: " + sr.ReadLine()));
+                    Console.WriteLine(String.Format("Страна: " + sr.ReadLine()));
+                    Console.WriteLine(String.Format("Дата рождения: " + sr.ReadLine()));
+                    Console.WriteLine(String.Format("Организация: " + sr.ReadLine()));
+                    Console.WriteLine(String.Format("Почтовый индекс: " + sr.ReadLine()));
+                    Console.WriteLine(String.Format("Прочая информация: " + sr.ReadLine()));
+                }
+                
+                else
+                    Console.WriteLine("Такой человек не найден . .");
+            }
+        }
+
+    }
+}
